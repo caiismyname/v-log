@@ -23,11 +23,22 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="g2N-iy-pFc"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MQ7-5h-Id3">
+                                <rect key="frame" x="20" y="617" width="335" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Take Photo"/>
+                                <connections>
+                                    <action selector="button:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CHp-eC-qWG"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="MQ7-5h-Id3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="J0m-B8-yt6"/>
                             <constraint firstItem="UGJ-IA-WBb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QQg-fh-pLm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="UGJ-IA-WBb" secondAttribute="trailing" id="Ykv-8C-5Vy"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="MQ7-5h-Id3" secondAttribute="bottom" constant="20" id="bCC-3Y-17f"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="MQ7-5h-Id3" secondAttribute="trailing" constant="20" id="igI-LR-X7u"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="UGJ-IA-WBb" secondAttribute="bottom" id="iuZ-wX-ziT"/>
                             <constraint firstItem="UGJ-IA-WBb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="j9G-gO-rLd"/>
                         </constraints>
