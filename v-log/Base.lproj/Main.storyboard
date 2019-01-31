@@ -18,38 +18,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UGJ-IA-WBb" userLabel="Viewfinder">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vxN-RI-9fv">
+                                <rect key="frame" x="5" y="462" width="365" height="200"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <viewLayoutGuide key="safeArea" id="g2N-iy-pFc"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MQ7-5h-Id3">
-                                <rect key="frame" x="20" y="617" width="335" height="30"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Take Photo"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="buA-G1-7oW"/>
+                                </constraints>
+                                <color key="tintColor" red="0.74509803919999995" green="0.18823529410000001" blue="0.098039215690000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Record"/>
                                 <connections>
-                                    <action selector="button:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CHp-eC-qWG"/>
+                                    <action selector="recordButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eDh-x1-rJM"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="MQ7-5h-Id3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="J0m-B8-yt6"/>
-                            <constraint firstItem="UGJ-IA-WBb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QQg-fh-pLm"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="UGJ-IA-WBb" secondAttribute="trailing" id="Ykv-8C-5Vy"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="MQ7-5h-Id3" secondAttribute="bottom" constant="20" id="bCC-3Y-17f"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="MQ7-5h-Id3" secondAttribute="trailing" constant="20" id="igI-LR-X7u"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="UGJ-IA-WBb" secondAttribute="bottom" id="iuZ-wX-ziT"/>
-                            <constraint firstItem="UGJ-IA-WBb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="j9G-gO-rLd"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="vxN-RI-9fv" secondAttribute="bottom" constant="5" id="kIp-Z6-wac"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="vxN-RI-9fv" secondAttribute="trailing" constant="5" id="lGt-ps-4tP"/>
+                            <constraint firstItem="vxN-RI-9fv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="oYB-hA-zr6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="viewfinder" destination="UGJ-IA-WBb" id="KqQ-B3-IMz"/>
+                        <outlet property="recordButton" destination="vxN-RI-9fv" id="9nU-uj-eIN"/>
+                        <outlet property="viewFinder" destination="8bC-Xf-vdC" id="Jxh-az-6yZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
         </scene>
     </scenes>
 </document>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		277F8BD622014B6800D9CA7F /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277F8BD522014B6800D9CA7F /* VideoHelper.swift */; };
 		27E68BF221EEDDC100D8D94F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E68BF121EEDDC100D8D94F /* AppDelegate.swift */; };
 		27E68BF421EEDDC100D8D94F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E68BF321EEDDC100D8D94F /* ViewController.swift */; };
 		27E68BF721EEDDC100D8D94F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27E68BF521EEDDC100D8D94F /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		277F8BD522014B6800D9CA7F /* VideoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoHelper.swift; path = "../../../Downloads/RWVideoNinja/RWVideoNinja-Starter/RWVideoNinja/VideoHelper.swift"; sourceTree = "<group>"; };
 		27E68BEE21EEDDC100D8D94F /* v-log.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "v-log.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27E68BF121EEDDC100D8D94F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27E68BF321EEDDC100D8D94F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		27E68BF021EEDDC100D8D94F /* v-log */ = {
 			isa = PBXGroup;
 			children = (
+				277F8BD522014B6800D9CA7F /* VideoHelper.swift */,
 				27E68BF121EEDDC100D8D94F /* AppDelegate.swift */,
 				27E68BF321EEDDC100D8D94F /* ViewController.swift */,
 				27E68BF521EEDDC100D8D94F /* Main.storyboard */,
@@ -256,6 +259,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				277F8BD622014B6800D9CA7F /* VideoHelper.swift in Sources */,
 				27E68BF421EEDDC100D8D94F /* ViewController.swift in Sources */,
 				27E68BF221EEDDC100D8D94F /* AppDelegate.swift in Sources */,
 			);
