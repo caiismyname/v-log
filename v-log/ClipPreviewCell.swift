@@ -11,6 +11,4 @@ import UIKit
 class ClipPreviewCell: UICollectionViewCell {
 
     @IBOutlet weak var clipPreviewView: UIImageView!
-    
-    
 }
