@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var viewFinder: UIView!
-
+    @IBOutlet weak var clipsButton: UIButton!
+    
     var captureSession: AVCaptureSession?
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var captureVideoOutput: AVCaptureMovieFileOutput?
@@ -36,6 +37,7 @@ class ViewController: UIViewController {
             viewFinder.layer.addSublayer(videoPreviewLayer!)
             // Make sure to bring the button to front *after* adding the video preview
             self.view.bringSubviewToFront(recordButton)
+            self.view.bringSubviewToFront(clipsButton)
 
             captureSession?.startRunning()
 
@@ -108,6 +110,10 @@ class ViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy_MM_dd_hh_mm_ss"
         return (formatter.string(from: Date()) as NSString) as String
+    }
+    
+    @IBAction func unwindToMainAction(unwindSegue: UIStoryboardSegue) {
+        
     }
 }
 
