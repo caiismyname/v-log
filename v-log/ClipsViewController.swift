@@ -8,21 +8,24 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     @IBOutlet weak var clipsPreviewCollectionView: UICollectionView!
     @IBOutlet weak var clipsPreviewDisplay: UIView!
     @IBOutlet weak var previewDismissButton: UIBarButtonItem!
+    @IBOutlet weak var clipDeleteButton: UIButton!
     
     private let reuseIdentifier = "ClipCell"
     private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
     private let itemsPerRow: CGFloat = 4
     private var all_previews: [UIImage] = []
     private var all_item_urls: [String] = []
-    
-    // Below is so we can dismiss the preview once it's done
-    private var videoCurrentlyPreview: Bool = false
+    private var isVideoCurrentlyPreview: Bool = false
+    private var currentPreviewVideoName: String?
+    private let fmanager = FileManager.default
     
     override func viewDidLoad() {
         self.all_previews = getAllPreviews() ?? []
         self.clipsPreviewCollectionView.delegate = self
         self.clipsPreviewCollectionView.dataSource = self
         self.previewDismissButton.isEnabled = false
+        self.clipDeleteButton.isEnabled = false
+        self.clipDeleteButton.isHidden = true
     }
     
     func getAllPreviews() -> [UIImage]? {
@@ -63,12 +66,23 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let url = self.all_item_urls[indexPath.item]
         
-        videoCurrentlyPreview = true;
-        previewDismissButton.isEnabled = true
+        self.isVideoCurrentlyPreview = true
+        self.currentPreviewVideoName = self.all_item_urls[indexPath.item]
+        self.previewDismissButton.isEnabled = true
         self.playVideo(fileURL: URL(fileURLWithPath: url))
     }
     
     func playVideo(fileURL: URL) {
+        // Remove the previous player layer, if one exists
+        if let existingLayers = self.clipsPreviewDisplay.layer.sublayers {
+            for layer in existingLayers {
+                layer.removeFromSuperlayer()
+            }
+        }
+        
+        self.clipDeleteButton.isEnabled = true
+        self.clipDeleteButton.isHidden = false
+        
         let playerItem = AVPlayerItem(url: fileURL)
         let player = AVPlayer(playerItem: playerItem)
         let playerLayer = AVPlayerLayer(player: player)
@@ -78,11 +92,27 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     @IBAction func previewDismissTapped(_ sender: Any) {
-        self.videoCurrentlyPreview = false
+        self.isVideoCurrentlyPreview = false
+        self.currentPreviewVideoName = nil
         self.previewDismissButton.isEnabled = false
         self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
     }
     
+    @IBAction func clipDeleteTapped(_ sender: Any) {
+        self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
+        self.isVideoCurrentlyPreview = false
+        self.clipDeleteButton.isEnabled = false
+        self.clipDeleteButton.isHidden = true
+        self.previewDismissButton.isEnabled = false
+        do {
+            try self.fmanager.removeItem(atPath: self.currentPreviewVideoName!)
+            self.currentPreviewVideoName = nil
+            self.clipsPreviewCollectionView.reloadData()
+        } catch {
+            print("Error deleting clip")
+        }
+        
+    }
     // MARK: Collection view stuff
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
