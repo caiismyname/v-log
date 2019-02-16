@@ -7,6 +7,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @IBOutlet weak var clipsPreviewCollectionView: UICollectionView!
     @IBOutlet weak var clipsPreviewDisplay: UIView!
+    @IBOutlet weak var previewDismissButton: UIBarButtonItem!
     
     private let reuseIdentifier = "ClipCell"
     private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
@@ -14,11 +15,14 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     private var all_previews: [UIImage] = []
     private var all_item_urls: [String] = []
     
+    // Below is so we can dismiss the preview once it's done
+    private var videoCurrentlyPreview: Bool = false
     
     override func viewDidLoad() {
         self.all_previews = getAllPreviews() ?? []
         self.clipsPreviewCollectionView.delegate = self
         self.clipsPreviewCollectionView.dataSource = self
+        self.previewDismissButton.isEnabled = false
     }
     
     func getAllPreviews() -> [UIImage]? {
@@ -55,10 +59,12 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
     }
     
+    // Triggered when a collection item (clip) is selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(NSString(format: "Selected item %d", indexPath.item))
         let url = self.all_item_urls[indexPath.item]
-        print(url)
+        
+        videoCurrentlyPreview = true;
+        previewDismissButton.isEnabled = true
         self.playVideo(fileURL: URL(fileURLWithPath: url))
     }
     
@@ -69,8 +75,15 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         playerLayer.frame = self.clipsPreviewDisplay.frame
         self.clipsPreviewDisplay.layer.addSublayer(playerLayer)
         player.play()
-        
     }
+    
+    @IBAction func previewDismissTapped(_ sender: Any) {
+        self.videoCurrentlyPreview = false
+        self.previewDismissButton.isEnabled = false
+        self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
+    }
+    
+    // MARK: Collection view stuff
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
