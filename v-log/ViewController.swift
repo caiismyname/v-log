@@ -73,17 +73,6 @@ class ViewController: UIViewController {
         }
     }
     
-    
-//    Callback that displays the "success" popup
-    @objc func video(_ videoPath: String, didFinishSavingWithError error: Error?, contextInfo info: AnyObject) {
-        let title = (error == nil) ? "Success" : "Error"
-        let message = (error == nil) ? "Video was saved" : "Video failed to save"
-
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
     func getDirectoryPath() -> URL {
         do {
             let fmanager = FileManager.default
@@ -127,7 +116,6 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
         
         if error != nil {
             print("Movie file finishing error: \(String(describing: error))")
-//            success = (((error! as NSError).userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue)!
         }
         
         // Save video to documents directory
@@ -137,6 +125,5 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
         } catch {
             print("Error saving video")
         }
-        
     }
 }

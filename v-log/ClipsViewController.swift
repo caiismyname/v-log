@@ -28,8 +28,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             let vlog_folder = documents.appendingPathComponent("vlog_clips", isDirectory: true)
             var vlog_folder_contents = try fmanager.contentsOfDirectory(atPath: vlog_folder.path)
             
-            // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
-            vlog_folder_contents.sort()
+            vlog_folder_contents.sort() // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
             for clip in vlog_folder_contents {
                     all_item_urls.append(vlog_folder.appendingPathComponent(clip).path)
             }
@@ -77,11 +76,11 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                                 numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return getAllPreviews()?.count ?? 0
     }
     
+    // This makes the actual clip preview cells
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ClipPreviewCell
         let clipPreview = photo(for: indexPath)
@@ -91,9 +90,8 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    // Cell Layout stuff
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
         let availableWidth = view.frame.width - paddingSpace
         let widthPerItem = availableWidth / itemsPerRow
@@ -101,15 +99,11 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         return CGSize(width: widthPerItem, height: widthPerItem)
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return sectionInsets
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sectionInsets.left
     }
 }
@@ -120,50 +114,3 @@ private extension ClipsViewController {
         return all_previews[indexPath.row]
     }
 }
-
-//// MARK: - UICollectionViewDataSource
-//extension ClipsViewController {
-//
-//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-//
-//    override func collectionView(_ collectionView: UICollectionView,
-//                                 numberOfItemsInSection section: Int) -> Int {
-//        return getAllPreviews()?.count ?? 0
-//    }
-//
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ClipPreviewCell
-//        let clipPreview = photo(for: indexPath)
-//        cell.backgroundColor = .white
-//        cell.clipPreviewView.image = clipPreview
-//
-//        return cell
-//    }
-//}
-
-//// MARK: - Collection View Flow Layout Delegate
-//extension ClipsViewController : UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-//        let availableWidth = view.frame.width - paddingSpace
-//        let widthPerItem = availableWidth / itemsPerRow
-//
-//        return CGSize(width: widthPerItem, height: widthPerItem)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        insetForSectionAt section: Int) -> UIEdgeInsets {
-//        return sectionInsets
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        return sectionInsets.left
-//    }
-//}
