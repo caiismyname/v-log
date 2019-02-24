@@ -55,27 +55,42 @@ class ViewController: UIViewController {
         }
     }
     
+    func startRecordingState() {
+        // Set record button
+        recordButton.setTitle("Stop", for: [])
+        recordButton.setTitleColor(UIColor.white, for: [])
+        recordButton.backgroundColor = UIColor.red
+        
+        // Disable switching to other states
+        clipsButton.isEnabled = false
+        clipsButton.isHidden = true
+        print("Start recording")
+    }
+    
+    func stopRecordingState() {
+        // Set record button
+        recordButton.setTitle("Record", for: [])
+        recordButton.setTitleColor(UIColor.red, for: [])
+        recordButton.backgroundColor = UIColor.white
+        
+        // Reenable switching to other states
+        clipsButton.isEnabled = true
+        clipsButton.isHidden = false
+        print("Stop recording")
+    }
+    
     @IBAction func recordButtonPress(_ sender: Any) {
         guard let captureVideoOutput = self.captureVideoOutput else { return}
         
         if captureVideoOutput.isRecording {
-            // Stop
             captureVideoOutput.stopRecording()
-            recordButton.setTitle("Record", for: [])
-            recordButton.setTitleColor(UIColor.red, for: [])
-            recordButton.backgroundColor = UIColor.white
-            
-            print("stoppping the recording")
+            stopRecordingState()
         } else {
             // TODO Don't think this timestamp thing will be robust to timezone issues
             let outputFileName = NSUUID().uuidString
             let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
             captureVideoOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
-            recordButton.setTitle("Stop", for: [])
-            recordButton.setTitleColor(UIColor.white, for: [])
-            recordButton.backgroundColor = UIColor.red
-            
-            print("starting to record")
+            startRecordingState()
         }
     }
     

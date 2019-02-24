@@ -28,13 +28,13 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     // Following functions handle button states around videos being selected to preview
-    func clipIsPreviewed() {
+    func clipIsPreviewedState() {
         self.previewDismissButton.isEnabled = true
         self.clipDeleteButton.isEnabled = true
         self.clipDeleteButton.isHidden = false
     }
     
-    func clipDimissed() {
+    func clipDimissedState() {
         self.previewDismissButton.isEnabled = false
         self.clipDeleteButton.isEnabled = false
         self.clipDeleteButton.isHidden = true
@@ -80,7 +80,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // Triggered when a collection item (clip) is selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        clipIsPreviewed()
+        clipIsPreviewedState()
         self.currentPreviewVideoName = self.all_item_urls[indexPath.item]
         let url = self.all_item_urls[indexPath.item]
         self.playVideo(fileURL: URL(fileURLWithPath: url))
@@ -103,7 +103,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     @IBAction func previewDismissTapped(_ sender: Any) {
-        clipDimissed()
+        clipDimissedState()
     }
     
     @IBAction func clipDeleteTapped(_ sender: Any) {
@@ -115,7 +115,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             print("Error deleting clip")
         }
         
-        clipDimissed()        
+        clipDimissedState()
     }
     // MARK: Collection view stuff
     
