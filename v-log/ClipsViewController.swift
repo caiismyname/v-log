@@ -15,7 +15,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     private let itemsPerRow: CGFloat = 4
     private var all_previews: [UIImage] = []
     private var all_item_urls: [String] = []
-    private var isVideoCurrentlyPreview: Bool = false
+    private var isClipCurrentlyPreviewing: Bool = false
     private var currentPreviewVideoName: String?
     private let fmanager = FileManager.default
     
@@ -28,6 +28,27 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         self.clipDeleteButton.isHidden = true
     }
     
+    // Following functions handle button states around videos being selected to preview
+    func clipIsPreviewed() {
+        self.isClipCurrentlyPreviewing = true
+        self.previewDismissButton.isEnabled = true
+        self.clipDeleteButton.isEnabled = true
+        self.clipDeleteButton.isHidden = false
+    }
+    
+    func clipFinishedPlaying() {
+        self.isClipCurrentlyPreviewing = false
+    }
+    
+    func clipDimissed() {
+        self.previewDismissButton.isEnabled = false
+        self.clipDeleteButton.isEnabled = false
+        self.clipDeleteButton.isHidden = true
+        
+        self.currentPreviewVideoName = nil
+        self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
+    }
+    
     func getAllPreviews() -> [UIImage]? {
         do {
             let fmanager = FileManager.default
@@ -36,7 +57,10 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             var vlog_folder_contents = try fmanager.contentsOfDirectory(atPath: vlog_folder.path)
             
             vlog_folder_contents.sort() // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
+            print("getting previews")
+            self.all_item_urls = []
             for clip in vlog_folder_contents {
+                    print(vlog_folder.appendingPathComponent(clip).path)
                     all_item_urls.append(vlog_folder.appendingPathComponent(clip).path)
             }
             
@@ -66,9 +90,8 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let url = self.all_item_urls[indexPath.item]
         
-        self.isVideoCurrentlyPreview = true
+        clipIsPreviewed()
         self.currentPreviewVideoName = self.all_item_urls[indexPath.item]
-        self.previewDismissButton.isEnabled = true
         self.playVideo(fileURL: URL(fileURLWithPath: url))
     }
     
@@ -80,9 +103,6 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
         }
         
-        self.clipDeleteButton.isEnabled = true
-        self.clipDeleteButton.isHidden = false
-        
         let playerItem = AVPlayerItem(url: fileURL)
         let player = AVPlayer(playerItem: playerItem)
         let playerLayer = AVPlayerLayer(player: player)
@@ -92,25 +112,21 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     @IBAction func previewDismissTapped(_ sender: Any) {
-        self.isVideoCurrentlyPreview = false
-        self.currentPreviewVideoName = nil
-        self.previewDismissButton.isEnabled = false
-        self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
+        clipDimissed()
     }
     
     @IBAction func clipDeleteTapped(_ sender: Any) {
-        self.clipsPreviewDisplay.layer.sublayers![0].removeFromSuperlayer()
-        self.isVideoCurrentlyPreview = false
-        self.clipDeleteButton.isEnabled = false
-        self.clipDeleteButton.isHidden = true
-        self.previewDismissButton.isEnabled = false
         do {
             try self.fmanager.removeItem(atPath: self.currentPreviewVideoName!)
-            self.currentPreviewVideoName = nil
+            self.all_previews = getAllPreviews() ?? []// Regenerate thumbnails to reflect deleted video
+            print("deleting" + self.currentPreviewVideoName!)
             self.clipsPreviewCollectionView.reloadData()
         } catch {
             print("Error deleting clip")
         }
+        
+        clipFinishedPlaying()
+        clipDimissed()
         
     }
     // MARK: Collection view stuff
@@ -120,7 +136,7 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return getAllPreviews()?.count ?? 0
+        return self.all_previews.count
     }
     
     // This makes the actual clip preview cells
