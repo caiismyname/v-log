@@ -15,7 +15,6 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     private let itemsPerRow: CGFloat = 4
     private var all_previews: [UIImage] = []
     private var all_item_urls: [String] = []
-    private var isClipCurrentlyPreviewing: Bool = false
     private var currentPreviewVideoName: String?
     private let fmanager = FileManager.default
     
@@ -30,14 +29,9 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // Following functions handle button states around videos being selected to preview
     func clipIsPreviewed() {
-        self.isClipCurrentlyPreviewing = true
         self.previewDismissButton.isEnabled = true
         self.clipDeleteButton.isEnabled = true
         self.clipDeleteButton.isHidden = false
-    }
-    
-    func clipFinishedPlaying() {
-        self.isClipCurrentlyPreviewing = false
     }
     
     func clipDimissed() {
@@ -57,10 +51,8 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             var vlog_folder_contents = try fmanager.contentsOfDirectory(atPath: vlog_folder.path)
             
             vlog_folder_contents.sort() // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
-            print("getting previews")
             self.all_item_urls = []
             for clip in vlog_folder_contents {
-                    print(vlog_folder.appendingPathComponent(clip).path)
                     all_item_urls.append(vlog_folder.appendingPathComponent(clip).path)
             }
             
@@ -88,10 +80,9 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // Triggered when a collection item (clip) is selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let url = self.all_item_urls[indexPath.item]
-        
         clipIsPreviewed()
         self.currentPreviewVideoName = self.all_item_urls[indexPath.item]
+        let url = self.all_item_urls[indexPath.item]
         self.playVideo(fileURL: URL(fileURLWithPath: url))
     }
     
@@ -119,15 +110,12 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         do {
             try self.fmanager.removeItem(atPath: self.currentPreviewVideoName!)
             self.all_previews = getAllPreviews() ?? []// Regenerate thumbnails to reflect deleted video
-            print("deleting" + self.currentPreviewVideoName!)
             self.clipsPreviewCollectionView.reloadData()
         } catch {
             print("Error deleting clip")
         }
         
-        clipFinishedPlaying()
-        clipDimissed()
-        
+        clipDimissed()        
     }
     // MARK: Collection view stuff
     
