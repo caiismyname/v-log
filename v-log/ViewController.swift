@@ -25,11 +25,17 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         let captureDevice = AVCaptureDevice.default(for: AVMediaType.video)
+        let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)
         do {
             let input = try AVCaptureDeviceInput(device: captureDevice!)
             captureSession = AVCaptureSession()
             captureSession?.addInput(input)
+            
+            // Add audio
+            let audioInput = try AVCaptureDeviceInput(device: audioDevice!)
+            captureSession?.addInput(audioInput)
 
+            // Create live preview
             videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
             videoPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
             videoPreviewLayer?.frame = view.layer.bounds
@@ -84,7 +90,6 @@ class ViewController: UIViewController {
             let directoryExists = fmanager.fileExists(atPath: vlog_folder.path, isDirectory: &isDirectory)
             if (!directoryExists || !isDirectory.boolValue) {
                 try fmanager.createDirectory(at: vlog_folder, withIntermediateDirectories: false, attributes: [:])
-                print("directory didn't exist, making it")
             }
             
             let clip_url = vlog_folder.appendingPathComponent(generateCurrentTimeStamp(), isDirectory: false).appendingPathExtension("mov")
@@ -121,7 +126,7 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
         // Save video to documents directory
         do {
             try FileManager.default.moveItem(at: outputFileURL, to: getDirectoryPath())
-            print("done saving")
+            print("Done saving video")
         } catch {
             print("Error saving video")
         }
