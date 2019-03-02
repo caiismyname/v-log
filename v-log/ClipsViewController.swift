@@ -67,7 +67,10 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
                 
                 let timestamp = CMTime(seconds: 0, preferredTimescale: 60)
                 let imageRef = try generator.copyCGImage(at: timestamp, actualTime: nil)
-                previews.append(UIImage(cgImage: imageRef))
+                let originalImage = UIImage(cgImage: imageRef)
+                let rect = generateImagePreviewRect(size: originalImage.size)
+                let croppedImage = cropImage(originalImage, toRect: rect, viewWidth: CGFloat(200), viewHeight: CGFloat(200))
+                previews.append(croppedImage!)
             }
 
             return previews
@@ -76,6 +79,43 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
             print("Image retrevial failed with error \(error)")
             return nil
         }
+    }
+    
+    func generateImagePreviewRect(size: CGSize) -> CGRect {
+        if size.width < size.height {
+            // Portrait
+            let sideLen = size.width
+            return CGRect.init(x: 0, y: (size.height / 2) - (sideLen / 2), width: sideLen, height: sideLen)
+        } else if size.width > size.height {
+            // Landscape
+            let sideLen = size.height
+            return CGRect.init(x: (size.width / 2) - (sideLen / 2), y: 0, width: sideLen, height: sideLen)
+        } else {
+            // Square
+            let sideLen = size.height
+            return CGRect.init(x: 0, y: 0, width: sideLen, height: sideLen)
+        }
+    }
+    
+    func cropImage(_ inputImage: UIImage, toRect cropRect: CGRect, viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?
+    {
+        let imageViewScale = CGFloat(1)
+        
+        // Scale cropRect to handle images larger than shown-on-screen size
+        let cropZone = CGRect(x:cropRect.origin.x * imageViewScale,
+                              y:cropRect.origin.y * imageViewScale,
+                              width:cropRect.size.width * imageViewScale,
+                              height:cropRect.size.height * imageViewScale)
+        
+        // Perform cropping in Core Graphics
+        guard let cutImageRef: CGImage = inputImage.cgImage?.cropping(to:cropZone)
+            else {
+                return nil
+        }
+        
+        // Return image to UIImage
+        let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
+        return croppedImage
     }
     
     // Triggered when a collection item (clip) is selected

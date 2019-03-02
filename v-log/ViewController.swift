@@ -11,6 +11,7 @@ import AVFoundation
 import AVKit
 import MobileCoreServices
 
+
 class ViewController: UIViewController {
     
     @IBOutlet weak var recordButton: UIButton!
@@ -23,6 +24,11 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.didOrientationChange(_:)),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
 
         let captureDevice = AVCaptureDevice.default(for: AVMediaType.video)
         let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)
@@ -54,7 +60,28 @@ class ViewController: UIViewController {
             print(error)
         }
     }
-    
+
+    // This changes the orientation that the video is recorded in
+    @objc func didOrientationChange(_ notification: Notification) {
+        switch UIDevice.current.orientation {
+        case .landscapeLeft:
+            print("landscapeLeft")
+            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeRight
+        case .landscapeRight:
+            print("landscapeRight")
+            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeLeft
+        case .portrait:
+            print("portrait Normal")
+            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portrait
+        case .portraitUpsideDown:
+            print("portrait Upsidedown")
+            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portraitUpsideDown
+        default:
+            print("other")
+        }
+        
+    }
+
     func startRecordingState() {
         // Set record button
         recordButton.setTitle("Stop", for: [])
@@ -78,6 +105,10 @@ class ViewController: UIViewController {
         clipsButton.isHidden = false
         print("Stop recording")
     }
+    
+//    func switchToFrontCamera() {
+//
+//    }
     
     @IBAction func recordButtonPress(_ sender: Any) {
         guard let captureVideoOutput = self.captureVideoOutput else { return}
