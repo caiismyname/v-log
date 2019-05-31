@@ -43,9 +43,16 @@ class ViewController: UIViewController {
 
             // Create live preview
             videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
-            videoPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
             videoPreviewLayer?.frame = view.layer.bounds
             videoPreviewLayer?.session = captureSession
+            
+            // Create square mask
+            let squareMask = CALayer.init()
+            squareMask.backgroundColor = UIColor.init(white: 1.0, alpha: 1.0).cgColor
+            let previewDimension = 2 * min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+            squareMask.bounds = CGRect.init(x: 0, y: 0, width: previewDimension, height: previewDimension)
+            videoPreviewLayer?.mask = squareMask
+            
             viewFinder.layer.addSublayer(videoPreviewLayer!)
             // Make sure to bring the button to front *after* adding the video preview
             self.view.bringSubviewToFront(recordButton)
@@ -64,22 +71,21 @@ class ViewController: UIViewController {
     // This changes the orientation that the video is recorded in
     @objc func didOrientationChange(_ notification: Notification) {
         switch UIDevice.current.orientation {
-        case .landscapeLeft:
-            print("landscapeLeft")
-            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeRight
-        case .landscapeRight:
-            print("landscapeRight")
-            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeLeft
-        case .portrait:
-            print("portrait Normal")
-            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portrait
-        case .portraitUpsideDown:
-            print("portrait Upsidedown")
-            self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portraitUpsideDown
-        default:
-            print("other")
+            case .landscapeLeft:
+                print("landscapeLeft")
+                self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeRight
+            case .landscapeRight:
+                print("landscapeRight")
+                self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .landscapeLeft
+            case .portrait:
+                print("portrait Normal")
+                self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portrait
+            case .portraitUpsideDown:
+                print("portrait Upsidedown")
+                self.captureVideoOutput?.connection(with: .video)?.videoOrientation = .portraitUpsideDown
+            default:
+                print("other")
         }
-        
     }
 
     func startRecordingState() {
@@ -98,7 +104,7 @@ class ViewController: UIViewController {
         // Set record button
         recordButton.setTitle("Record", for: [])
         recordButton.setTitleColor(UIColor.red, for: [])
-        recordButton.backgroundColor = UIColor.white
+        recordButton.backgroundColor = UIColor.black
         
         // Reenable switching to other states
         clipsButton.isEnabled = true
