@@ -49,7 +49,7 @@ class ViewController: UIViewController {
             // Create square mask
             let squareMask = CALayer.init()
             squareMask.backgroundColor = UIColor.init(white: 1.0, alpha: 1.0).cgColor
-            let previewDimension = 2 * min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+            let previewDimension = 2 * min(UIScreen.main.bounds.width, UIScreen.main.bounds.height) // Why 2x? IDK. screen.width/height seems to only give the screen.
             squareMask.bounds = CGRect.init(x: 0, y: 0, width: previewDimension, height: previewDimension)
             videoPreviewLayer?.mask = squareMask
             
@@ -161,7 +161,59 @@ class ViewController: UIViewController {
     @IBAction func unwindToMainAction(unwindSegue: UIStoryboardSegue) {
         
     }
+    
+    func squareCropVideo(inputURL: NSURL, completion: @escaping (_ outputURL : NSURL?) -> ())
+    {
+        let videoAsset: AVAsset = AVAsset( url: inputURL as URL )
+        let clipVideoTrack = videoAsset.tracks( withMediaType: AVMediaType.video ).first! as AVAssetTrack
+        
+        let composition = AVMutableComposition()
+        composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: CMPersistentTrackID())
+        
+        let videoComposition = AVMutableVideoComposition()
+        videoComposition.renderSize = CGSize( width: clipVideoTrack.naturalSize.height, height: clipVideoTrack.naturalSize.height )
+        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+        
+        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRangeMake(start: CMTime.zero, duration: CMTimeMakeWithSeconds(60, preferredTimescale: 30))
+    
+        let transform1: CGAffineTransform = CGAffineTransform(translationX: clipVideoTrack.naturalSize.height, y: 0)
+        let transform2 = transform1.rotated(by: .pi/2)
+        let finalTransform = transform2
+        
+        transformer.setTransform(finalTransform, at: CMTime.zero)
+        
+        instruction.layerInstructions = [transformer]
+        videoComposition.instructions = [instruction]
+        
+        // Export
+        let exportSession = AVAssetExportSession(asset: videoAsset, presetName: AVAssetExportPresetHighestQuality)!
+        // Save video to documents directory
+        let croppedOutputFileUrl = getDirectoryPath()
+        exportSession.outputURL = croppedOutputFileUrl
+        exportSession.outputFileType = AVFileType.mov
+        exportSession.videoComposition = videoComposition
+        
+        exportSession.exportAsynchronously() { () -> Void in
+            if exportSession.status == .completed {
+                print("Square crop export complete")
+                DispatchQueue.main.async(execute: {
+                    completion(croppedOutputFileUrl as NSURL)
+                })
+                return
+            } else if exportSession.status == .failed {
+                print("Square crop export failed - \(String(describing: exportSession.error))")
+            }
+            
+            completion(nil)
+            return
+        }
+    }
 }
+
+
 
 extension ViewController : AVCaptureFileOutputRecordingDelegate {
     // DidStartRecording
@@ -173,14 +225,13 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
         
         if error != nil {
             print("Movie file finishing error: \(String(describing: error))")
+            return
         }
         
-        // Save video to documents directory
-        do {
-            try FileManager.default.moveItem(at: outputFileURL, to: getDirectoryPath())
-            print("Done saving video")
-        } catch {
-            print("Error saving video")
-        }
+        squareCropVideo(inputURL: outputFileURL as NSURL, completion: { (outputURL) -> () in
+                print("called square crop video")
+            }
+        )
+
     }
 }
