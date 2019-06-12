@@ -47,75 +47,31 @@ class ClipsViewController: UIViewController, UICollectionViewDelegate, UICollect
         do {
             let fmanager = FileManager.default
             let documents = fmanager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // Accessing vlog_clips directory for URLs to the clips, to load on selection of collectionView item
             let vlog_folder = documents.appendingPathComponent("vlog_clips", isDirectory: true)
             var vlog_folder_contents = try fmanager.contentsOfDirectory(atPath: vlog_folder.path)
-            
-            vlog_folder_contents.sort() // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
+            vlog_folder_contents.sort()
             self.all_item_urls = []
             for clip in vlog_folder_contents {
-                    all_item_urls.append(vlog_folder.appendingPathComponent(clip).path)
+                all_item_urls.append(vlog_folder.appendingPathComponent(clip).path)
             }
-            
+        
+            // Accessing thumbnails to show in the collectionView
+            let thumbnails_folder = documents.appendingPathComponent("thumbnails", isDirectory: true)
+            var thumbnails_folder_contents = try fmanager.contentsOfDirectory(atPath: thumbnails_folder.path)
+            thumbnails_folder_contents.sort() // Naive way of putting videos in chron order. Relies on timestamp naming of the clips.
             var previews = [UIImage]()
-            
-            for clip_url in vlog_folder_contents {
-                let full_clip_url = vlog_folder.appendingPathComponent(clip_url)
-                // It is important to create URls to local files using `fileURLWithPath` otherwise some things think it's a remote URL
-                let asset = AVURLAsset(url: URL(fileURLWithPath: full_clip_url.path))
-                let generator = AVAssetImageGenerator(asset: asset)
-                generator.appliesPreferredTrackTransform = true // This rotates the images into right-side-up
-                
-                let timestamp = CMTime(seconds: 0, preferredTimescale: 60)
-                let imageRef = try generator.copyCGImage(at: timestamp, actualTime: nil)
-                let originalImage = UIImage(cgImage: imageRef)
-                let rect = generateImagePreviewRect(size: originalImage.size)
-                let croppedImage = cropImage(originalImage, toRect: rect, viewWidth: CGFloat(200), viewHeight: CGFloat(200))
-                previews.append(croppedImage!)
+            for thumbnail_name in thumbnails_folder_contents {
+                previews.append(UIImage.init(contentsOfFile: thumbnails_folder.appendingPathComponent(thumbnail_name).path) ?? UIColor.blue.imageWithColor(width: 200, height: 200))
             }
-
+        
             return previews
         
         } catch let error as NSError {
             print("Image retrevial failed with error \(error)")
             return nil
         }
-    }
-    
-    func generateImagePreviewRect(size: CGSize) -> CGRect {
-        if size.width < size.height {
-            // Portrait
-            let sideLen = size.width
-            return CGRect.init(x: 0, y: (size.height / 2) - (sideLen / 2), width: sideLen, height: sideLen)
-        } else if size.width > size.height {
-            // Landscape
-            let sideLen = size.height
-            return CGRect.init(x: (size.width / 2) - (sideLen / 2), y: 0, width: sideLen, height: sideLen)
-        } else {
-            // Square
-            let sideLen = size.height
-            return CGRect.init(x: 0, y: 0, width: sideLen, height: sideLen)
-        }
-    }
-    
-    func cropImage(_ inputImage: UIImage, toRect cropRect: CGRect, viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?
-    {
-        let imageViewScale = CGFloat(1)
-        
-        // Scale cropRect to handle images larger than shown-on-screen size
-        let cropZone = CGRect(x:cropRect.origin.x * imageViewScale,
-                              y:cropRect.origin.y * imageViewScale,
-                              width:cropRect.size.width * imageViewScale,
-                              height:cropRect.size.height * imageViewScale)
-        
-        // Perform cropping in Core Graphics
-        guard let cutImageRef: CGImage = inputImage.cgImage?.cropping(to:cropZone)
-            else {
-                return nil
-        }
-        
-        // Return image to UIImage
-        let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
-        return croppedImage
     }
     
     // Triggered when a collection item (clip) is selected

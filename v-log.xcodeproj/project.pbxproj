@@ -16,6 +16,7 @@
 		27E68BFC21EEDDC300D8D94F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27E68BFA21EEDDC300D8D94F /* LaunchScreen.storyboard */; };
 		27E68C0721EEDDC300D8D94F /* v_logTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E68C0621EEDDC300D8D94F /* v_logTests.swift */; };
 		27E68C1221EEDDC300D8D94F /* v_logUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E68C1121EEDDC300D8D94F /* v_logUITests.swift */; };
+		27ECC6C922B07D2200882AE1 /* thumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27ECC6C822B07D2200882AE1 /* thumbnails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		27E68C0D21EEDDC300D8D94F /* v-logUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "v-logUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27E68C1121EEDDC300D8D94F /* v_logUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = v_logUITests.swift; sourceTree = "<group>"; };
 		27E68C1321EEDDC300D8D94F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27ECC6C822B07D2200882AE1 /* thumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = thumbnails.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			children = (
 				27E68BF121EEDDC100D8D94F /* AppDelegate.swift */,
 				27E68BF321EEDDC100D8D94F /* ViewController.swift */,
+				27ECC6C822B07D2200882AE1 /* thumbnails.swift */,
 				27E68BF521EEDDC100D8D94F /* Main.storyboard */,
 				27114E64220699F300E490D5 /* ClipPreviewCell.swift */,
 				27E68BF821EEDDC300D8D94F /* Assets.xcassets */,
@@ -265,6 +268,7 @@
 				27E68BF421EEDDC100D8D94F /* ViewController.swift in Sources */,
 				27114E63220693BB00E490D5 /* ClipsViewController.swift in Sources */,
 				27114E65220699F300E490D5 /* ClipPreviewCell.swift in Sources */,
+				27ECC6C922B07D2200882AE1 /* thumbnails.swift in Sources */,
 				27E68BF221EEDDC100D8D94F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

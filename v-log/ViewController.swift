@@ -230,8 +230,11 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
         
         squareCropVideo(inputURL: outputFileURL as NSURL, completion: { (outputURL) -> () in
                 print("called square crop video")
+                ThumbnailManager().generateAndSaveThumbnail(clip_url: outputURL!) // Use the cropped video's url as the input to the thumbnail generator
             }
         )
+        
+        
 
     }
 }
