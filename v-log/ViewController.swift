@@ -21,21 +21,24 @@ class ViewController: UIViewController {
     var captureSession: AVCaptureSession?
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var captureVideoOutput: AVCaptureMovieFileOutput?
+    var usingBackCamera = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.didOrientationChange(_:)),
-                                               name: UIDevice.orientationDidChangeNotification,
-                                               object: nil)
-
-        let captureDevice = AVCaptureDevice.default(for: AVMediaType.video)
-        let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)
+        
         do {
-            let input = try AVCaptureDeviceInput(device: captureDevice!)
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(self.didOrientationChange(_:)),
+                                                   name: UIDevice.orientationDidChangeNotification,
+                                                   object: nil)
+            
+            let videoDevice = AVCaptureDevice.default(for: AVMediaType.video) // Default to back camera
+            let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)
             captureSession = AVCaptureSession()
-            captureSession?.addInput(input)
+            
+            // Add video
+            let videoInput = try AVCaptureDeviceInput(device: videoDevice!)
+            captureSession?.addInput(videoInput)
             
             // Add audio
             let audioInput = try AVCaptureDeviceInput(device: audioDevice!)
@@ -63,11 +66,18 @@ class ViewController: UIViewController {
             // Prepare capture button
             captureVideoOutput =  AVCaptureMovieFileOutput()
             captureSession?.addOutput(captureVideoOutput!)
+            
+            // Prepare the switch camera gesture
+            let switchCameraGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.switchCameras(_:))) // RE: selectors https://stackoverflow.com/questions/24007650/selector-in-swift
+            switchCameraGestureRecognizer.numberOfTapsRequired = 2
+            switchCameraGestureRecognizer.numberOfTouchesRequired = 1
+            viewFinder.addGestureRecognizer(switchCameraGestureRecognizer)
+            
         } catch {
             print(error)
         }
     }
-
+    
     // This changes the orientation that the video is recorded in
     @objc func didOrientationChange(_ notification: Notification) {
         switch UIDevice.current.orientation {
@@ -111,10 +121,40 @@ class ViewController: UIViewController {
         clipsButton.isHidden = false
         print("Stop recording")
     }
-    
-//    func switchToFrontCamera() {
-//
-//    }
+
+    // @objc b/c this function is associated with the tap gesture using a #selector, which requires objc functions
+    // internal b/c the thing selected by the selector needs to be visable
+    // see: https://stackoverflow.com/questions/24007650/selector-in-swift
+    @objc internal func switchCameras(_ sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            var device: AVCaptureDevice.DeviceType
+            var position: AVCaptureDevice.Position
+            
+            if usingBackCamera {
+                device = AVCaptureDevice.DeviceType.builtInWideAngleCamera
+                position = AVCaptureDevice.Position.front
+            } else {
+                device = AVCaptureDevice.DeviceType.builtInWideAngleCamera
+                position = AVCaptureDevice.Position.back
+            }
+            
+            usingBackCamera = !usingBackCamera // toggle the camera state
+            
+            do {
+                // To remove the previous camera, find the video input on the capturesession (video and audio are two separate inputs)
+                let oldInput = captureSession?.inputs.first(where: {$0.ports.first?.mediaType == AVMediaType.video})
+                let newVideoDevice = AVCaptureDevice.default(device, for: AVMediaType.video, position: position)
+                let newInput = try AVCaptureDeviceInput(device: newVideoDevice!)
+                captureSession?.beginConfiguration()
+                captureSession?.removeInput(oldInput!)
+                captureSession?.addInput(newInput)
+                captureSession?.commitConfiguration()
+                
+            } catch {
+                print (error)
+            }
+        }
+    }
     
     @IBAction func recordButtonPress(_ sender: Any) {
         guard let captureVideoOutput = self.captureVideoOutput else { return}

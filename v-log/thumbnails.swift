@@ -86,8 +86,8 @@ class ThumbnailManager {
         
         // Perform cropping in Core Graphics
         guard let cutImageRef: CGImage = inputImage.cgImage?.cropping(to:cropZone)
-            else {
-                return nil
+        else {
+            return nil
         }
         
         // Return image to UIImage

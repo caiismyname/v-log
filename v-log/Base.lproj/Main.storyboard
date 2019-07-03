@@ -41,6 +41,7 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="vxN-RI-9fv" secondAttribute="bottom" constant="5" id="kIp-Z6-wac"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="vxN-RI-9fv" secondAttribute="trailing" constant="5" id="lGt-ps-4tP"/>
